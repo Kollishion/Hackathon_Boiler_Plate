@@ -37,7 +37,6 @@ model User {
   updatedAt DateTime @updatedAt
 
 
-  // Relations
   refreshTokens RefreshToken[]
   passwordResets PasswordResetToken[]
   emailTokens    EmailVerificationToken[]
@@ -46,49 +45,33 @@ model User {
 
 model RefreshToken {
   id String @id @default(cuid())
-
-  token String @unique
-
+  token String @unique @db.VarChar(512)
   userId String
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   expiresAt DateTime
-
   createdAt DateTime @default(now())
-
   @@index([userId])
 }
 
 
 model PasswordResetToken {
   id String @id @default(cuid())
-
-  token String @unique
-
+  token String @unique @db.VarChar(512)
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   expiresAt DateTime
-
   used Boolean @default(false)
-
   createdAt DateTime @default(now())
-
   @@index([userId])
 }
 
 
 model EmailVerificationToken {
   id String @id @default(cuid())
-
-  token String @unique
-
+  token String @unique @db.VarChar(512)
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   expiresAt DateTime
-
   createdAt DateTime @default(now())
-
   @@index([userId])
 }

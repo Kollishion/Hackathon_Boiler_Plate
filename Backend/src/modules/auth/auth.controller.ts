@@ -9,7 +9,7 @@ import {
   resetPassword,
   getProfile,
   logoutUser,
-} from "./auth.service";
+} from "./auth.service.ts";
 
 const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,

@@ -1,4 +1,4 @@
-import prisma from "../../config/prisma.ts";
+import prisma from "../config/prisma.ts";
 import type { Role, AccountStatus } from "@prisma/client";
 
 export const getAllUsers = async () => {

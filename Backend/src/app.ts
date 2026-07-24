@@ -4,9 +4,9 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import "dotenv/config";
 import authRoutes from "./modules/auth/auth.routes";
+import { adminRouter } from "./admin/admin.router";
 import morgan from "morgan";
 import express from "express";
-const PORT = Number(process.env.PORT) || 5000;
 const app = express();
 app.disable("x-powered-by");
 
@@ -29,7 +29,7 @@ app.get("/health", (_, res) => {
 app.use(morgan('dev'));
 
 app.use("/api/v1/auth", authRoutes);
-
+app.use("/api/v1/admin", adminRouter);
 app.use("/{*any}", (_, res)=>{
 	res.status(404).json({
 		message: "Route not found",

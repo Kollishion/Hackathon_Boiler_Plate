@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import prisma from "../../config/prisma.ts";
 import { sendEmail } from "../../config/mailer.ts";
-import { generateOtp, generateToken, hashToken } from "../../utils/jwt.ts";
-import type { RegisterInput, LoginInput } from "../auth/auth.validation";
-import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
+import { generateOtp, generateToken, hashToken } from "../../utils/token.ts";
+import type { RegisterInput, LoginInput } from "../auth/auth.validation.ts";
+import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.ts";
 
 const OTP_EXPIRY_MINUTES = 10;
 const RESET_EXPIRY_MINUTES = 15;
