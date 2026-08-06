@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt";
 import prisma from "../../config/prisma.ts";
-import { sendEmail } from "../../config/mailer.ts";
 import { generateOtp, generateToken, hashToken } from "../../utils/token.ts";
 import type { RegisterInput, LoginInput } from "../auth/auth.validation.ts";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.ts";
+import { queueEmail } from "../email/email.producer.ts";
 
-const OTP_EXPIRY_MINUTES = 10;
-const RESET_EXPIRY_MINUTES = 15;
+const OTP_EXPIRY_MINUTES = Number(process.env.OTP_EXPIRY_IN_MINUTES ?? 10);
+const RESET_EXPIRY_MINUTES = Number(process.env.OTP_RESET_IN_MINUTES ?? 15);
 
 export const registerUser = async (data: RegisterInput) => {
   const usernameExists = await prisma.user.findUnique({
@@ -53,11 +53,9 @@ export const registerUser = async (data: RegisterInput) => {
     },
   });
 
-  await sendEmail(
-    user.email,
-    "Verify your email",
-    `<p>Your verification code is <b>${otp}</b>. It expires in ${OTP_EXPIRY_MINUTES} minutes.</p>`,
-  );
+  await queueEmail({
+	  type: "VERIFY_EMAIL",email: user.email, otp
+  });
 
   return user;
 };
@@ -118,11 +116,11 @@ export const resendVerificationEmail = async (email: string) => {
     },
   });
 
-  await sendEmail(
-    user.email,
-    "Verify your email",
-    `<p>Your verification code is <b>${otp}</b>. It expires in ${OTP_EXPIRY_MINUTES} minutes.</p>`,
-  );
+  await queueEmail({
+    type: "VERIFY_EMAIL",
+    email: user.email,
+    otp,
+   }); 
 };
 
 export const loginUser = async (data: LoginInput) => {
@@ -220,12 +218,12 @@ export const forgotPassword = async (email: string) => {
   });
 
   const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-
-  await sendEmail(
-    user.email,
-    "Reset your password",
-    `<p>Click <a href="${resetUrl}">here</a> to reset your password. This link expires in ${RESET_EXPIRY_MINUTES} minutes.</p>`,
-  );
+  
+  await queueEmail({
+  type: "RESET_PASSWORD",
+  email: user.email,
+  resetUrl,
+  });
 };
 
 export const resetPassword = async (token: string, newPassword: string) => {

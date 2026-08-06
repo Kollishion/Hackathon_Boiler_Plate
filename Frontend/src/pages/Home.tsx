@@ -1,119 +1,53 @@
 import Navbar from "../components/Navbar";
 import FullScreenNav from "../components/FullScreenNav";
 
-import { Canvas } from "@react-three/fiber";
-import { Center, OrbitControls } from "@react-three/drei";
-
-import OrbModel from "../models/OrbModel";
-
 const Home = () => {
   return (
     <>
       <Navbar />
       <FullScreenNav />
 
-      <main className="relative min-h-screen overflow-hidden bg-background text-text">
+      <main className="min-h-screen bg-primary text-white">
+        <section className="relative overflow-hidden pt-32 pb-20 md:pt-40 lg:pt-48">
+          <div className="mx-auto max-w-6xl px-6">
+            <div className="mx-auto max-w-4xl text-center">
+              <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit
+              </h1>
 
-        {/* Background Glow */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute left-1/2 top-[45%] h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[180px]" />
-          <div className="absolute left-1/2 top-[55%] h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-tertiary/10 blur-[150px]" />
-        </div>
+              <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/80">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+              </p>
 
-        <section className="relative flex min-h-screen flex-col items-center pt-28">
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                <button className="rounded-md bg-white px-8 py-4 font-semibold text-primary transition hover:bg-white/90">
+                  Get Started
+                </button>
 
-          {/* Heading */}
-          <div className="z-20 text-center">
-
-            <span className="uppercase tracking-[0.7em] text-sm text-text-muted">
-              Build
-            </span>
-
-            <h1 className="mt-4 text-6xl font-black uppercase leading-none md:text-8xl lg:text-[8rem]">
-              THE{" "}
-              <span className="text-primary">
-                FUTURE
-              </span>
-            </h1>
-
-            <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-text-muted lg:text-lg">
-              Crafting scalable digital products with thoughtful design,
-              powerful engineering and modern AI technologies.
-            </p>
-
-            <div className="mt-10 flex justify-center gap-5">
-
-              <button className="rounded-full bg-primary px-9 py-4 font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-secondary cursor-pointer">
-                Get Started
-              </button>
-
-              <button className="rounded-full border border-primary px-9 py-4 font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-white cursor-pointer">
-                Explore
-              </button>
-
+                <button className="rounded-md border border-white/30 bg-white/10 px-8 py-4 font-semibold text-white transition hover:bg-white hover:text-primary">
+                  Learn More
+                </button>
+              </div>
             </div>
 
-          </div>
+            <div className="relative mx-auto mt-16 max-w-5xl">
+              <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-2xl backdrop-blur-sm">
+                <div className="flex aspect-[16/9] items-center justify-center bg-white/5">
+                  <div className="text-center">
+                    <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-white/20" />
+                    <p className="text-lg font-medium text-white/80">
+                      Hero image placeholder
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-          {/* Orb */}
-          <div className="relative -mt-8 h-[340px] w-[340px] md:h-[500px] md:w-[500px] lg:h-[620px] lg:w-[620px]">
-
-            <Canvas
-              camera={{
-                position: [0, 0, 9],
-                fov: 38,
-              }}
-              gl={{ alpha: true }}
-              onCreated={({ scene }) => {
-                scene.background = null;
-              }}
-            >
-              <ambientLight intensity={1.3} />
-
-              <pointLight
-                position={[5, 5, 5]}
-                intensity={4}
-                color="#e91e63"
-              />
-
-              <pointLight
-                position={[-5, -5, 5]}
-                intensity={3}
-                color="#5b21b6"
-              />
-
-              <directionalLight
-                position={[2, 2, 2]}
-                intensity={1}
-              />
-
-              <Center>
-                <OrbModel />
-              </Center>
-
-              <OrbitControls
-                autoRotate
-                autoRotateSpeed={0.8}
-                enablePan={false}
-                enableZoom={false}
-              />
-            </Canvas>
-
-          </div>
-
-          {/* Footer */}
-          <div className="-mt-6 flex flex-col items-center">
-
-            <div className="uppercase tracking-[0.45em] text-xs text-text-muted lg:text-sm">
-              AI • WEB • MOBILE • CLOUD
+              <div className="absolute -left-8 -bottom-8 h-32 w-32 rounded-full bg-white/10 blur-3xl" />
+              <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-secondary/20 blur-3xl" />
             </div>
-
-            <div className="mt-10 flex flex-col items-center">
-
-            </div>
-
           </div>
-
         </section>
       </main>
     </>
