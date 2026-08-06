@@ -18,6 +18,7 @@ import {
 import { generateAccessToken, generateRefreshToken } from "../../../utils/jwt";
 import { generateOtp, generateToken, hashToken } from "../../../utils/token";
 import { queueEmail } from "../../email/email.producer";
+import { AppError } from "../../../utils/error.ts";
 
 jest.mock("../../../config/prisma", () => {
   const { mockDeep } = require("jest-mock-extended")
@@ -343,7 +344,7 @@ describe("loginUser", () => {
 
     await expect(
       loginUser({ email: "nobody@example.com", password: "password123" })
-    ).rejects.toThrow("Invalid credentials.");
+    ).rejects.toMatchObject({message: "Invalid credentials.", status: 401});
 
     expect(bcrypt.compare).not.toHaveBeenCalled();
   });
@@ -355,7 +356,7 @@ describe("loginUser", () => {
 
     await expect(
       loginUser({ email: "test@example.com", password: "wrong-password" })
-    ).rejects.toThrow("Invalid credentials.");
+    ).rejects.toMatchObject({message: "Invalid credentials.", status: 401});
 
     expect(prismaMock.user.update).not.toHaveBeenCalled();
   });

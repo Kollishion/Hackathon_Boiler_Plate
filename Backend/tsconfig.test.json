@@ -8,6 +8,7 @@
   "include": [
     "src/**/*.test.ts",
     "src/**/__tests__/**/*.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "src/types/express.d.ts"
   ]
 }

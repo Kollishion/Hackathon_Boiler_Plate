@@ -11,6 +11,8 @@ import {
   logoutUser,
 } from "./auth.service.ts";
 
+import { AppError } from "../../utils/error.ts";
+
 const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
@@ -69,7 +71,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
   try {
     const token = req.cookies?.refreshToken;
     if (!token) {
-      throw new Error("No refresh token provided.");
+      throw new AppError("No refresh token provided.", 401);
     }
     const accessToken = await refreshAccessToken(token);
     res.status(200).json({ success: true, data: { accessToken } });
@@ -103,6 +105,7 @@ export const resetPasswordHandler = async (req: Request, res: Response, next: Ne
 
 export const profile = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if(!req.user) throw new AppError("Unauthorized", 401);
     const userId = req.user.id;
     const user = await getProfile(userId);
     res.status(200).json({ success: true, data: user });

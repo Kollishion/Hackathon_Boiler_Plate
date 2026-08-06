@@ -3,7 +3,7 @@ import { Role, AccountStatus } from "@prisma/client";
 declare global {
   namespace Express {
     interface Request {
-      user: {
+      user?: {
         id: string;
         username: string;
         email: string;

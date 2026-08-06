@@ -4,6 +4,7 @@ import { generateOtp, generateToken, hashToken } from "../../utils/token.ts";
 import type { RegisterInput, LoginInput } from "../auth/auth.validation.ts";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.ts";
 import { queueEmail } from "../email/email.producer.ts";
+import { AppError } from "../../utils/error.ts";
 
 const OTP_EXPIRY_MINUTES = Number(process.env.OTP_EXPIRY_IN_MINUTES ?? 10);
 const RESET_EXPIRY_MINUTES = Number(process.env.OTP_RESET_IN_MINUTES ?? 15);
@@ -13,14 +14,14 @@ export const registerUser = async (data: RegisterInput) => {
     where: { username: data.username },
   });
   if (usernameExists) {
-    throw new Error("Username already exists.");
+    throw new AppError("Username already exists.", 409);
   }
 
   const emailExists = await prisma.user.findUnique({
     where: { email: data.email },
   });
   if (emailExists) {
-    throw new Error("Email already exists.");
+    throw new AppError("Email already exists.", 409);
   }
 
   const hashedPassword = await bcrypt.hash(data.password, 12);
@@ -63,10 +64,10 @@ export const registerUser = async (data: RegisterInput) => {
 export const verifyEmail = async (email: string, otp: string) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    throw new Error("Invalid verification request.");
+    throw new AppError("Invalid verification request.", 404);
   }
   if (user.emailVerified) {
-    throw new Error("Email is already verified.");
+    throw new AppError("Email is already verified.", 400);
   }
 
   const hashedOtp = hashToken(otp);
@@ -80,7 +81,7 @@ export const verifyEmail = async (email: string, otp: string) => {
   });
 
   if (!record) {
-    throw new Error("Invalid or expired OTP.");
+    throw new AppError("Invalid or expired OTP.", 400);
   }
 
   await prisma.user.update({
@@ -96,10 +97,10 @@ export const verifyEmail = async (email: string, otp: string) => {
 export const resendVerificationEmail = async (email: string) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    throw new Error("No account found with this email.");
+    throw new AppError("No account found with this email.", 404);
   }
   if (user.emailVerified) {
-    throw new Error("Email is already verified.");
+    throw new AppError("Email is already verified.", 400);
   }
   await prisma.emailVerificationToken.deleteMany({
     where: { userId: user.id },
@@ -128,20 +129,20 @@ export const loginUser = async (data: LoginInput) => {
     where: { email: data.email },
   });
   if (!user) {
-    throw new Error("Invalid credentials.");
+    throw new AppError("Invalid credentials.", 401);
   }
 
   const validPassword = await bcrypt.compare(data.password, user.password);
   if (!validPassword) {
-    throw new Error("Invalid credentials.");
+    throw new AppError("Invalid credentials.", 401);
   }
 
   if (user.status !== "ACTIVE") {
-    throw new Error("This account is not active. Contact support.");
+    throw new AppError("This account is not active. Contact support.", 403);
   }
 
   if (!user.emailVerified) {
-  throw new Error("Please verify your email before logging in.");
+    throw new AppError("Please verify your email before logging in.", 403);
   }
 
   const updatedUser = await prisma.user.update({
@@ -187,12 +188,12 @@ export const refreshAccessToken = async (token: string) => {
   const stored = await prisma.refreshToken.findUnique({ where: { token } });
 
   if (!stored || stored.expiresAt < new Date()) {
-    throw new Error("Invalid or expired refresh token.");
+    throw new AppError("Invalid or expired refresh token.", 401);
   }
 
   const user = await prisma.user.findUnique({ where: { id: stored.userId } });
   if (!user) {
-    throw new Error("User not found.");
+    throw new AppError("User not found.", 404);
   }
 
   const payload = { id: user.id, email: user.email, role: user.role };
@@ -238,7 +239,7 @@ export const resetPassword = async (token: string, newPassword: string) => {
   });
 
   if (!record) {
-    throw new Error("Invalid or expired reset token.");
+    throw new AppError("Invalid or expired reset token.", 400);
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, 12);
