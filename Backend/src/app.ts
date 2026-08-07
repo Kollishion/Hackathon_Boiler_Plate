@@ -11,7 +11,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import { globalLimiter } from "./middlewares/rateLimiters/globalLimiter";
 
 const app = express();
-
+app.set("trust proxy", 1);
 app.disable("x-powered-by");
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(
