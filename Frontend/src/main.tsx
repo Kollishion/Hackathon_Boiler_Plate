@@ -8,7 +8,7 @@ createRoot(document.getElementById('root')!).render(
 		<NavContext>
   			<StrictMode>
     				<App />
-  			</StrictMode>,
+  			</StrictMode>
 		</NavContext>
 	</BrowserRouter>
 )

@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "bun --watch src/server.ts",
+    "dev:local": "bun --watch --env-file=.env.local src/server.ts",
     "start": "bun src/server.ts",
     "build": "tsc",
     "test": "jest"
