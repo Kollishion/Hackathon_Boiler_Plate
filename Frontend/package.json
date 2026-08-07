@@ -9,10 +9,6 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "tests": {
-  	"environment": "jsdom",
-	
-  }, 
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@gsap/react": "^2.1.2",
